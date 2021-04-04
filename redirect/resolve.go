@@ -177,7 +177,7 @@ func (r *Resolver) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	case "txt":
 		_, err = rw.Write([]byte(fu))
 	case "redirect":
-		http.Redirect(rw, req, fu, http.StatusTemporaryRedirect)
+		http.Redirect(rw, req, fu, http.StatusFound)
 		return
 	default:
 		http.Error(rw, "Invalid format string", http.StatusBadRequest)
