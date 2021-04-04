@@ -20,6 +20,8 @@ type Settings struct {
 		Domain string `yaml:"domain"`
 		Token  string `yaml:"token"`
 	} `yaml:"duckdns"`
+
+	EMail string `yaml:"email"`
 }
 
 type AllowedDomainsMapping map[string]bool

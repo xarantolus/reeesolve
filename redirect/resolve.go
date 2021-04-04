@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"reeesolve/config"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -159,6 +160,11 @@ func (r *Resolver) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 		http.Error(rw, err.Error(), statusCode)
 		return
+	}
+
+	// Cache the response for a certain amount of time
+	if s := int(r.cachePurgeTime.Seconds()); s > 0 {
+		rw.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(s))
 	}
 
 	// Depending on what format is requested, we encode different things

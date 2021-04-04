@@ -2,11 +2,14 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"reeesolve/config"
 	"reeesolve/redirect"
-	"strconv"
+
+	"github.com/caddyserver/certmagic"
+	"github.com/libdns/duckdns"
 )
 
 func main() {
@@ -20,10 +23,30 @@ func main() {
 		log.Fatalln("Loading settings file:", err.Error())
 	}
 
+	// Set up certmagic with DuckDNS token
+	certmagic.DefaultACME.Agreed = true
+	certmagic.DefaultACME.Email = settings.EMail
+	certmagic.DefaultACME.DNS01Solver = &certmagic.DNS01Solver{
+		DNSProvider: &duckdns.Provider{
+			APIToken: settings.DuckDNS.Token,
+		},
+	}
+
+	// Set ports where we listen, 0 chooses a random port
+	certmagic.HTTPPort = 0
+	certmagic.HTTPSPort = settings.Port
+
 	var r = redirect.NewResolver(settings)
 
-	http.Handle("/resolve", r)
+	mux := http.NewServeMux()
+	mux.Handle("/resolve", r)
 
-	log.Printf("Server listening on port %d\n", settings.Port)
-	http.ListenAndServe(":"+strconv.Itoa(settings.Port), nil)
+	domain := fmt.Sprintf("%s.duckdns.org", settings.DuckDNS.Domain)
+
+	log.Printf("If you redirected port %d to this machine in your router, you can now access https://%s:%d/resolve\n", settings.Port, domain, settings.Port)
+
+	err = certmagic.HTTPS([]string{domain}, mux)
+	if err != nil {
+		panic("setting up https server: " + err.Error())
+	}
 }
