@@ -1,0 +1,28 @@
+port: 18571
+
+resolve_timeout: 10s
+cache_duration: 15m
+
+duckdns:
+  token: "your token here"
+  domain: "your domain prefix here, e.g. for example.duckdns.org you would just put 'example' here"
+
+allowed_domains:
+  - t.co
+  - nyti.ms
+  - bit.ly
+  - is.gd
+  - aspedrom.com
+  - bit.do
+  - fb.me
+  - rb.gy
+  - cutt.ly
+  - amp.gs
+  - tinyurl.com
+  - goo.gl
+  - nzzl.us
+  - ift.tt
+  - ow.ly
+  - bl.ink
+  - buff.ly
+  - maps.app.goo.gl
