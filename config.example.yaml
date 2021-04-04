@@ -1,12 +1,21 @@
+# Server port. You should create a port forwarding in your router to this port
 port: 18571
 
+# Timeout for resolving redirects
 resolve_timeout: 10s
+
+# How long a certain redirect should be cached.
 cache_duration: 15m
 
+# DuckDNS credentials, go to duckdns.org
 duckdns:
   token: "your token here"
   domain: "your domain prefix here, e.g. for example.duckdns.org you would just put 'example' here"
 
+# For LetsEncrypt
+email: you@example.com
+
+# List of domains that are allowed. Other domains are denied
 allowed_domains:
   - t.co
   - nyti.ms
