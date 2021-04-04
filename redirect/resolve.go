@@ -174,11 +174,12 @@ func (r *Resolver) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		err = json.NewEncoder(rw).Encode(map[string]string{
 			"url": fu,
 		})
+	case "redirect":
+		rw.Header().Set("Location", fu)
+		rw.WriteHeader(http.StatusFound)
+		fallthrough
 	case "txt":
 		_, err = rw.Write([]byte(fu))
-	case "redirect":
-		http.Redirect(rw, req, fu, http.StatusFound)
-		return
 	default:
 		http.Error(rw, "Invalid format string", http.StatusBadRequest)
 		return
