@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"reeesolve/config"
+	"reeesolve/ping"
 	"reeesolve/redirect"
 
 	"github.com/caddyserver/certmagic"
@@ -35,6 +36,12 @@ func main() {
 	// Set ports where we listen, 0 chooses a random port
 	certmagic.HTTPPort = 0
 	certmagic.HTTPSPort = settings.Port
+
+	log.Println("Contacting DuckDNS to update our IP adress...")
+	err = ping.DuckDNS(settings.DuckDNS.Domain, settings.DuckDNS.Token)
+	if err != nil {
+		log.Println("Error while contacting: ", err.Error())
+	}
 
 	var r = redirect.NewResolver(settings)
 
