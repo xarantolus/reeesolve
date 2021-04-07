@@ -70,16 +70,24 @@ func (r *Resolver) run() {
 }
 
 func (r *Resolver) Resolve(urlStr string, reqURL *url.URL) (fullURL string, err error) {
+	// First of all, we try to parse & remove the URL hash
+	u, err := url.ParseRequestURI(urlStr)
+	if err != nil {
+		return
+	}
+
+	// Remove the fragment, as it's not sent to the server anyways.
+	// This enables better caching
+	if u.Fragment != "" {
+		u.Fragment = ""
+		u.RawFragment = ""
+		urlStr = u.String()
+	}
+
 	// At first, we check the cache
 	cached, ok := r.cached(urlStr)
 	if ok {
 		return cached.fullURL, nil
-	}
-
-	// Then everything else
-	u, err := url.ParseRequestURI(urlStr)
-	if err != nil {
-		return
 	}
 
 	// Make sure we have a valid scheme
